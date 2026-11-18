@@ -1,14 +1,29 @@
+apiVersion: resource.k8s.io/v1
+kind: ResourceClaimTemplate
+metadata:
+  name: gpu-test
+spec:
+  spec:
+    devices:
+      requests:
+        - name: gpu
+          exactly:
+            deviceClassName: gpu.amd.com
+---
 apiVersion: v1
 kind: Pod
 metadata:
   name: gpu-test
 spec:
   restartPolicy: Never
+  resourceClaims:
+    - name: gpu
+      resourceClaimTemplateName: gpu-test
   containers:
     - name: rocminfo
       image: rocm/rocm-terminal:latest
       imagePullPolicy: IfNotPresent
       command: ["bash", "-c", "rocminfo | grep -E 'Marketing Name|Name: +gfx'"]
       resources:
-        limits:
-          amd.com/gpu: 1
+        claims:
+          - name: gpu
