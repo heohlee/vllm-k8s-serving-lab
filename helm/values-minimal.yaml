@@ -1,7 +1,10 @@
 servingEngineSpec:
   runtimeClassName: ""
   strategy:
-    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   imagePullPolicy: IfNotPresent
   modelSpec:
     - name: "qwen05b"
