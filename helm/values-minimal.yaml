@@ -1,5 +1,7 @@
 servingEngineSpec:
   runtimeClassName: ""
+  strategy:
+    type: Recreate
   imagePullPolicy: IfNotPresent
   modelSpec:
     - name: "qwen05b"
@@ -9,8 +11,6 @@ servingEngineSpec:
       replicaCount: 1
       requestCPU: 2
       requestMemory: "8Gi"
-      requestGPU: 1
-      requestGPUType: "amd.com/gpu"
       vllmConfig:
         maxModelLen: 4096
         gpuMemoryUtilization: 0.8

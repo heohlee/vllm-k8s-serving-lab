@@ -1,0 +1,16 @@
+resources:
+  - all.yaml
+patches:
+  - target:
+      kind: Deployment
+      name: ".*-deployment-vllm"
+    patch: |-
+      - op: add
+        path: /spec/template/spec/resourceClaims
+        value:
+          - name: gpu
+            resourceClaimName: vllm-gpu
+      - op: add
+        path: /spec/template/spec/containers/0/resources/claims
+        value:
+          - name: gpu
