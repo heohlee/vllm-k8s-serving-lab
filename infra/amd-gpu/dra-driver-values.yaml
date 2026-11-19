@@ -1,3 +1,8 @@
 kubeletPlugin:
   nodeSelector:
     gpu: amd
+  tolerations:
+    - key: pool
+      operator: Equal
+      value: gpu
+      effect: NoSchedule
