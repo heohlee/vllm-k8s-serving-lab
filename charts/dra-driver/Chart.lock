@@ -1,0 +1,6 @@
+dependencies:
+- name: k8s-gpu-dra-driver
+  repository: https://rocm.github.io/k8s-gpu-dra-driver
+  version: v1.0.1
+digest: sha256:33d6c86d44d2a3a3c137d960f9b1ec029b49d76d3dfe7e8b050954c647987e35
+generated: "2026-11-19T11:50:41.186801328-03:00"

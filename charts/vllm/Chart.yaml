@@ -1,0 +1,10 @@
+apiVersion: v2
+name: vllm
+description: Wrapper chart for the vLLM production stack
+type: application
+version: 0.1.0
+appVersion: 0.1.14
+dependencies:
+  - name: vllm-stack
+    version: 0.1.14
+    repository: https://vllm-project.github.io/production-stack

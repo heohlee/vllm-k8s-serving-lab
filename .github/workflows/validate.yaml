@@ -1,0 +1,69 @@
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HELM_VERSION: v4.3.1
+  KUBECTL_VERSION: v1.37.2
+  KUBECONFORM_VERSION: v0.8.0
+  YAMLLINT_VERSION: 1.38.0
+
+jobs:
+  validate:
+    name: YAML, Helm and Kubernetes schema checks
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Install Helm
+        uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e
+        with:
+          version: ${{ env.HELM_VERSION }}
+          checksum-policy: required
+      - name: Install yamllint
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/yamllint"
+          "$RUNNER_TEMP/yamllint/bin/pip" install --quiet --disable-pip-version-check \
+            "yamllint==${YAMLLINT_VERSION}"
+          echo "$RUNNER_TEMP/yamllint/bin" >> "$GITHUB_PATH"
+      - name: Install kubectl
+        run: |
+          set -euo pipefail
+          bin="$RUNNER_TEMP/bin"
+          mkdir -p "$bin"
+          base="https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64"
+          curl -sSfLo "$bin/kubectl" "$base/kubectl"
+          curl -sSfLo "$bin/kubectl.sha256" "$base/kubectl.sha256"
+          echo "$(cat "$bin/kubectl.sha256")  $bin/kubectl" | sha256sum -c -
+          chmod +x "$bin/kubectl"
+          echo "$bin" >> "$GITHUB_PATH"
+      - name: Install kubeconform
+        run: |
+          set -euo pipefail
+          bin="$RUNNER_TEMP/bin"
+          mkdir -p "$bin"
+          base="https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}"
+          curl -sSfLo "$RUNNER_TEMP/kubeconform.tar.gz" \
+            "$base/kubeconform-linux-amd64.tar.gz"
+          curl -sSfLo "$RUNNER_TEMP/kubeconform-CHECKSUMS" "$base/CHECKSUMS"
+          expected=$(awk '$2 == "kubeconform-linux-amd64.tar.gz" { print $1 }' \
+            "$RUNNER_TEMP/kubeconform-CHECKSUMS")
+          echo "$expected  $RUNNER_TEMP/kubeconform.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/kubeconform.tar.gz" -C "$bin" kubeconform
+          echo "$bin" >> "$GITHUB_PATH"
+      - name: Install the vllm-dra post-renderer plugin
+        run: helm plugin install helm/postrender-dra
+      - name: Run the validation script
+        run: scripts/validate.sh

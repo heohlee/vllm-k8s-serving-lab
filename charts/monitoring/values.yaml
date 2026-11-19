@@ -1,0 +1,31 @@
+kube-prometheus-stack:
+  prometheusOperator:
+    nodeSelector:
+      pool: cpu
+    admissionWebhooks:
+      patch:
+        nodeSelector:
+          pool: cpu
+  prometheus:
+    prometheusSpec:
+      nodeSelector:
+        pool: cpu
+      serviceMonitorSelectorNilUsesHelmValues: false
+  alertmanager:
+    alertmanagerSpec:
+      nodeSelector:
+        pool: cpu
+  grafana:
+    nodeSelector:
+      pool: cpu
+  kube-state-metrics:
+    nodeSelector:
+      pool: cpu
+  kubeEtcd:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeControllerManager:
+    enabled: false
+  kubeProxy:
+    enabled: false
