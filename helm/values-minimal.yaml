@@ -14,9 +14,13 @@ servingEngineSpec:
       replicaCount: 1
       requestCPU: 2
       requestMemory: "8Gi"
+      pvcStorage: "10Gi"
+      pvcExistingClaimName: vllm-models
       vllmConfig:
         maxModelLen: 4096
         gpuMemoryUtilization: 0.8
       env:
         - name: HSA_OVERRIDE_GFX_VERSION
           value: "11.0.0"
+        - name: VLLM_CACHE_ROOT
+          value: /data/vllm-cache

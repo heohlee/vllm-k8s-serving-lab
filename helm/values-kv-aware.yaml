@@ -14,6 +14,8 @@ servingEngineSpec:
       replicaCount: 2
       requestCPU: 2
       requestMemory: "12Gi"
+      pvcStorage: "10Gi"
+      pvcExistingClaimName: vllm-models
       vllmConfig:
         enablePrefixCaching: true
         maxModelLen: 4096
@@ -29,6 +31,8 @@ servingEngineSpec:
       env:
         - name: HSA_OVERRIDE_GFX_VERSION
           value: "11.0.0"
+        - name: VLLM_CACHE_ROOT
+          value: /data/vllm-cache
 routerSpec:
   routingLogic: "kvaware"
   startupProbe:
