@@ -7,3 +7,5 @@ k8s-gpu-dra-driver:
         operator: Equal
         value: gpu
         effect: NoSchedule
+  cdi:
+    dynamicPath: /etc/cdi
