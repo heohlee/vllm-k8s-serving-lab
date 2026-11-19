@@ -1,0 +1,12 @@
+servingEngineSpec:
+  tolerations:
+    - key: pool
+      operator: Equal
+      value: gpu
+      effect: NoSchedule
+routerSpec:
+  nodeSelectorTerms:
+    - matchExpressions:
+        - key: pool
+          operator: In
+          values: ["cpu"]

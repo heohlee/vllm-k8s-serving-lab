@@ -6,4 +6,15 @@ nodes:
   - role: worker
     labels:
       gpu: amd
+      pool: gpu
+    kubeadmConfigPatches:
+      - |
+        kind: JoinConfiguration
+        nodeRegistration:
+          taints:
+            - key: pool
+              value: gpu
+              effect: NoSchedule
   - role: worker
+    labels:
+      pool: cpu
