@@ -1,0 +1,9 @@
+k8s-gpu-dra-driver:
+  kubeletPlugin:
+    nodeSelector:
+      gpu: amd
+    tolerations:
+      - key: pool
+        operator: Equal
+        value: gpu
+        effect: NoSchedule

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: dra-driver
+description: Wrapper chart for the AMD k8s-gpu-dra-driver
+type: application
+version: 0.1.0
+appVersion: v1.0.1
+dependencies:
+  - name: k8s-gpu-dra-driver
+    version: v1.0.1
+    repository: https://rocm.github.io/k8s-gpu-dra-driver

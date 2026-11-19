@@ -1,42 +1,43 @@
-servingEngineSpec:
-  runtimeClassName: ""
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 0
-      maxUnavailable: 1
-  imagePullPolicy: IfNotPresent
-  modelSpec:
-    - name: "qwen05b"
-      repository: "vllm/vllm-openai-rocm"
-      tag: "v0.33.0"
-      modelURL: "Qwen/Qwen2.5-0.5B-Instruct"
-      replicaCount: 2
-      requestCPU: 2
-      requestMemory: "12Gi"
-      pvcStorage: "10Gi"
-      pvcExistingClaimName: vllm-models
-      vllmConfig:
-        enablePrefixCaching: true
-        maxModelLen: 4096
-        gpuMemoryUtilization: 0.4
-      lmcacheConfig:
-        enabled: true
-        cpuOffloadingBufferSize: "4"
-        enableController: true
-        controllerPort: 9000
-        controllerReplyPort: 9001
-        workerPorts: "8001"
-        workerHeartbeatTime: "30"
-      env:
-        - name: HSA_OVERRIDE_GFX_VERSION
-          value: "11.0.0"
-        - name: VLLM_CACHE_ROOT
-          value: /data/vllm-cache
-routerSpec:
-  routingLogic: "kvaware"
-  startupProbe:
-    failureThreshold: 12
-  lmcacheControllerPort: 9000
-  lmcacheControllerReplyPort: 9001
-  lmcacheControllerHeartbeatPort: 9002
+vllm-stack:
+  servingEngineSpec:
+    runtimeClassName: ""
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+    imagePullPolicy: IfNotPresent
+    modelSpec:
+      - name: "qwen05b"
+        repository: "vllm/vllm-openai-rocm"
+        tag: "v0.33.0"
+        modelURL: "Qwen/Qwen2.5-0.5B-Instruct"
+        replicaCount: 2
+        requestCPU: 2
+        requestMemory: "12Gi"
+        pvcStorage: "10Gi"
+        pvcExistingClaimName: vllm-models
+        vllmConfig:
+          enablePrefixCaching: true
+          maxModelLen: 4096
+          gpuMemoryUtilization: 0.4
+        lmcacheConfig:
+          enabled: true
+          cpuOffloadingBufferSize: "4"
+          enableController: true
+          controllerPort: 9000
+          controllerReplyPort: 9001
+          workerPorts: "8001"
+          workerHeartbeatTime: "30"
+        env:
+          - name: HSA_OVERRIDE_GFX_VERSION
+            value: "11.0.0"
+          - name: VLLM_CACHE_ROOT
+            value: /data/vllm-cache
+  routerSpec:
+    routingLogic: "kvaware"
+    startupProbe:
+      failureThreshold: 12
+    lmcacheControllerPort: 9000
+    lmcacheControllerReplyPort: 9001
+    lmcacheControllerHeartbeatPort: 9002
